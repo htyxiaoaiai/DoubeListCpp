@@ -1,0 +1,82 @@
+# DoubeListCpp
+双向链表的c++实现
+#pragma once
+#include <iostream>
+using namespace std;
+typedef int DataType;
+
+struct Node
+{
+	Node(const DataType& d)
+		:_next(NULL)
+		,_prev(NULL)
+		,_data(d)
+	{}
+public:
+	DataType _data;
+	Node* _prev;
+	Node* _next;
+};
+
+class DouList
+{
+	friend ostream& operator<<(ostream& os, DouList& l);
+public:
+	DouList()
+		:_head(NULL)
+		,_tail(NULL)
+	{}
+	DouList(const DouList& l)
+	{
+		if (l._head == NULL)
+		{
+			return;
+		}
+		Node *cur = l._head;
+		Node *newNode = new Node(cur->_data);
+		_head = newNode;
+		_tail = _head;
+		cur = cur->_next;
+		while (cur)
+		{
+			newNode = new Node(cur->_data);
+			_tail->_next = newNode;
+			newNode->_prev = _tail;
+			_tail = newNode;
+			cur = cur->_next;
+		}
+	}
+	DouList& operator=(DouList l)
+	{
+		swap(_head,l._head);
+		swap(_tail, l._tail);
+		return *this;
+	}
+	~DouList()
+	{
+		Node* cur = _head;
+		while (cur)
+		{
+			Node* del = cur;
+			cur = cur->_next;
+			delete del;
+		}
+		_head = NULL;
+		_tail = NULL;
+	}
+public:
+	void PushBack(const DataType& d);
+	void PopBack();
+	void PushFront(const DataType& d);
+	void PopFront();
+	Node* Find(const DataType& d);
+	void Insert(Node* pos, const DataType& d);
+	void BubbSort();
+	void Reverse();
+	void Remove(const DataType& d);
+	void RemoveAll(const DataType& d);
+	void Erase(Node* pos);
+private:
+	Node* _head;
+	Node* _tail;
+};
